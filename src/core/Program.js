@@ -20,6 +20,15 @@ export class Program {
             frontFace = gl.CCW,
             depthTest = true,
             depthWrite = true,
+            colorWrite = true,
+            stencilWrite = false,
+            stencilFunc = gl.NOTEQUAL,
+            stencilFail = gl.REPLACE,
+            stencilZFail = gl.REPLACE,
+            stencilZPass = gl.REPLACE,
+            stencilRef = 0,
+            stencilWriteMask = 0xff,
+            stencilReadMask = 0xff,
             depthFunc = gl.LESS,
         } = {}
     ) {
@@ -37,6 +46,15 @@ export class Program {
         this.frontFace = frontFace;
         this.depthTest = depthTest;
         this.depthWrite = depthWrite;
+        this.stencilWrite = stencilWrite;
+        this.colorWrite = colorWrite;
+        this.stencilWriteMask = stencilWriteMask;
+        this.stencilReadMask = stencilReadMask;
+        this.stencilRef = stencilRef;
+        this.stencilFunc = stencilFunc;
+        this.stencilFail = stencilFail;
+        this.stencilZFail = stencilZFail;
+        this.stencilZPass = stencilZPass;
         this.depthFunc = depthFunc;
         this.blendFunc = {};
         this.blendEquation = {};
@@ -141,6 +159,17 @@ export class Program {
         if (this.blendFunc.src)
             this.gl.renderer.setBlendFunc(this.blendFunc.src, this.blendFunc.dst, this.blendFunc.srcAlpha, this.blendFunc.dstAlpha);
         this.gl.renderer.setBlendEquation(this.blendEquation.modeRGB, this.blendEquation.modeAlpha);
+
+        this.gl.colorMask(this.colorWrite, this.colorWrite, this.colorWrite, this.colorWrite);
+
+        if (this.stencilWrite) this.gl.renderer.enable(this.gl.STENCIL_TEST);
+        else this.gl.renderer.disable(this.gl.STENCIL_TEST);
+
+        if (this.stencilWrite) {
+            this.gl.stencilMask(this.stencilWriteMask);
+            this.gl.stencilFunc(this.stencilFunc, this.stencilRef, this.stencilReadMask);
+            this.gl.stencilOp(this.stencilFail, this.stencilZFail, this.stencilZPass);
+        }
     }
 
     use({ flipFaces = false } = {}) {
