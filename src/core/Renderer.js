@@ -87,6 +87,7 @@ export class Renderer {
             this.getExtension('EXT_sRGB');
             this.getExtension('WEBGL_depth_texture');
             this.getExtension('WEBGL_draw_buffers');
+            this.getExtension('WEBGL_color_buffer_float')
         }
 
         // Create method aliases using extension (WebGL1) or native if available (WebGL2)
@@ -185,6 +186,15 @@ export class Renderer {
         if (this.state.depthFunc === value) return;
         this.state.depthFunc = value;
         this.gl.depthFunc(value);
+    }
+
+    setDepthTest(value) {
+        if (value) this.gl.renderer.enable(this.gl.DEPTH_TEST);
+        else this.gl.renderer.disable(this.gl.DEPTH_TEST);
+    }
+
+    setColorWrite(value) {
+        this.gl.colorMask(value, value, value, value);
     }
 
     activeTexture(value) {

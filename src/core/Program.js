@@ -23,9 +23,9 @@ export class Program {
             colorWrite = true,
             stencilWrite = false,
             stencilFunc = gl.NOTEQUAL,
-            stencilFail = gl.REPLACE,
-            stencilZFail = gl.REPLACE,
-            stencilZPass = gl.REPLACE,
+            stencilFail = gl.KEEP,
+            stencilZFail = gl.KEEP,
+            stencilZPass = gl.KEEP,
             stencilRef = 0,
             stencilWriteMask = 0xff,
             stencilReadMask = 0xff,
@@ -143,33 +143,36 @@ export class Program {
     }
 
     applyState() {
-        if (this.depthTest) this.gl.renderer.enable(this.gl.DEPTH_TEST);
-        else this.gl.renderer.disable(this.gl.DEPTH_TEST);
-
+        
         if (this.cullFace) this.gl.renderer.enable(this.gl.CULL_FACE);
         else this.gl.renderer.disable(this.gl.CULL_FACE);
+        
+        if (this.cullFace) this.gl.renderer.setCullFace(this.cullFace);
+        
+        this.gl.renderer.setFrontFace(this.frontFace);
 
         if (this.blendFunc.src) this.gl.renderer.enable(this.gl.BLEND);
         else this.gl.renderer.disable(this.gl.BLEND);
 
-        if (this.cullFace) this.gl.renderer.setCullFace(this.cullFace);
-        this.gl.renderer.setFrontFace(this.frontFace);
-        this.gl.renderer.setDepthMask(this.depthWrite);
-        this.gl.renderer.setDepthFunc(this.depthFunc);
         if (this.blendFunc.src)
             this.gl.renderer.setBlendFunc(this.blendFunc.src, this.blendFunc.dst, this.blendFunc.srcAlpha, this.blendFunc.dstAlpha);
         this.gl.renderer.setBlendEquation(this.blendEquation.modeRGB, this.blendEquation.modeAlpha);
-
-        this.gl.colorMask(this.colorWrite, this.colorWrite, this.colorWrite, this.colorWrite);
-
-        if (this.stencilWrite) this.gl.renderer.enable(this.gl.STENCIL_TEST);
-        else this.gl.renderer.disable(this.gl.STENCIL_TEST);
-
+        
+        this.gl.renderer.setDepthFunc(this.depthFunc);
+        this.gl.renderer.setDepthTest(this.depthTest);
+        this.gl.renderer.setDepthMask(this.depthWrite);
+        this.gl.renderer.setColorWrite(this.colorWrite);
+        
         if (this.stencilWrite) {
+            this.gl.renderer.enable(this.gl.STENCIL_TEST);
             this.gl.stencilMask(this.stencilWriteMask);
             this.gl.stencilFunc(this.stencilFunc, this.stencilRef, this.stencilReadMask);
             this.gl.stencilOp(this.stencilFail, this.stencilZFail, this.stencilZPass);
         }
+        else  {
+            this.gl.renderer.disable(this.gl.STENCIL_TEST);
+        }
+
     }
 
     use({ flipFaces = false } = {}) {
