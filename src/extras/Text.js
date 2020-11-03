@@ -74,7 +74,7 @@ export function Text({
             return line;
         }
 
-        let maxTimes = 100;
+        let maxTimes = 1500;
         let count = 0;
         while (cursor < text.length && count < maxTimes) {
             count++;
