@@ -9,6 +9,7 @@ export class Post {
     constructor(
         gl,
         {
+            stencil = false,
             width,
             height,
             dpr,
@@ -22,7 +23,7 @@ export class Post {
     ) {
         this.gl = gl;
 
-        this.options = { wrapS, wrapT, minFilter, magFilter };
+        this.options = { wrapS, wrapT, minFilter, magFilter, stencil };
 
         this.passes = [];
 
